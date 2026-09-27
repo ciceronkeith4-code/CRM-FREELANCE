@@ -1,0 +1,34 @@
+import * as React from "react"
+import { cn } from "cn"
+
+function Input({ className, type, onWheel, ...props }: React.ComponentProps<"input">) {
+  return (
+    <input
+      type={type}
+      data-slot="input"
+      className={cn(
+        "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+        // Hide the native number-input spinner arrows — they crowd narrow fields
+        // and look inconsistent across browsers; our own +/- controls (where we
+        // want them) are built separately.
+        type === "number" &&
+          "[-moz-appearance:textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none",
+        className
+      )}
+      onWheel={
+        type === "number"
+          ? (e) => {
+              // Prevent the browser's native "scroll to change value" behavior on
+              // number inputs — scrolling the page while hovering one should not
+              // silently edit the value.
+              e.currentTarget.blur()
+              onWheel?.(e)
+            }
+          : onWheel
+      }
+      {...props}
+    />
+  )
+}
+
+export { Input }
